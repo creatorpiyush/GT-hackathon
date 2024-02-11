@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:gt_hackathon/custom_route.dart';
-import 'package:gt_hackathon/features/home_page/home_page.dart';
+import 'package:gt_hackathon/features/home_page/main_page.dart';
 import 'package:gt_hackathon/mock_data/mock_users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,11 +27,9 @@ class _LoginPageState extends State<LoginPage> {
       if (mockUsers[data.name] != data.password) {
         return 'Password does not match';
       }
-      setState(() {
-        prefs
-            .setBool("isLogin", true)
-            .then((_) => prefs.setString("username", data.name));
-      });
+      prefs
+          .setBool("isLogin", true)
+          .then((_) => prefs.setString("username", data.name));
       return null;
     });
   }
@@ -60,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(
           FadePageRoute(
-            builder: (context) => const MyHomePage(),
+            builder: (context) => const MainPage(),
           ),
         );
       },

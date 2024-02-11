@@ -38,8 +38,6 @@ dependencies:
   flutter_login: ^5.0.0
   shared_preferences: ^2.2.2
   dash_chat_2: ^0.0.20
-  dot_navigation_bar: ^1.0.2
-  flutter_native_splash: ^2.3.10
 
 dev_dependencies:
   flutter_test:

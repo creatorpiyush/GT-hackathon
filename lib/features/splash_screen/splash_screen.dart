@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gt_hackathon/custom_route.dart';
-import 'package:gt_hackathon/features/home_page/home_page.dart';
+import 'package:gt_hackathon/features/home_page/main_page.dart';
 import 'package:gt_hackathon/features/login/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (context.mounted) {
         Navigator.of(context).pushReplacement(
           FadePageRoute(
-            builder: (context) => const MyHomePage(),
+            builder: (context) => const MainPage(),
           ),
         );
       }
