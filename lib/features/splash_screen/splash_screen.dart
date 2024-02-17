@@ -49,15 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         color: Theme.of(context).colorScheme.primary,
-        child: const Center(
-          child: Text(
-            'Splash Screen',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-        ),
+        child: Center(child: Image.asset("assets/images/SplashScreen.png")),
       ),
     );
   }

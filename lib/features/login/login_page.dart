@@ -43,6 +43,18 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  Future<String?> _signupUser(SignupData data) {
+    return Future.delayed(loginTime).then((_) {
+      return null;
+    });
+  }
+
+  Future<String?> _signupConfirm(String error, LoginData data) {
+    return Future.delayed(loginTime).then((_) {
+      return null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
@@ -67,6 +79,26 @@ class _LoginPageState extends State<LoginPage> {
         debugPrint('Name: $name');
         return _recoverPassword(name);
       },
+      onSignup: (signupData) {
+        debugPrint('Signup info');
+        debugPrint('Name: ${signupData.name}');
+        debugPrint('Password: ${signupData.password}');
+
+        signupData.additionalSignupData?.forEach((key, value) {
+          debugPrint('$key: $value');
+        });
+        if (signupData.termsOfService.isNotEmpty) {
+          debugPrint('Terms of service: ');
+          for (final element in signupData.termsOfService) {
+            debugPrint(
+              ' - ${element.term.id}: ${element.accepted == true ? 'accepted' : 'rejected'}',
+            );
+          }
+        }
+        return _signupUser(signupData);
+      },
+      onConfirmSignup: _signupConfirm,
+      onConfirmRecover: _signupConfirm,
       userValidator: (value) {
         if (!value!.contains('@') || !value.endsWith('.com')) {
           return "Email must contain '@' and end with '.com'";
@@ -79,6 +111,30 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
+      additionalSignupFields: [
+        const UserFormField(
+          keyName: 'Username',
+          icon: Icon(Icons.person_2),
+        ),
+        const UserFormField(keyName: 'Name'),
+        const UserFormField(keyName: 'Surname'),
+        UserFormField(
+          keyName: 'phone_number',
+          displayName: 'Phone Number',
+          userType: LoginUserType.phone,
+          fieldValidator: (value) {
+            final phoneRegExp = RegExp(
+              '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}\$',
+            );
+            if (value != null &&
+                value.length < 7 &&
+                !phoneRegExp.hasMatch(value)) {
+              return "This isn't a valid phone number";
+            }
+            return null;
+          },
+        ),
+      ],
     );
   }
 }
