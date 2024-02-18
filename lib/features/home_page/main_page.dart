@@ -37,8 +37,16 @@ class _BottomNavigationBarExampleState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: SizedBox(
+          width: 50.0,
+          height: 50.0,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 8.0, left: 8.0, bottom: 8.0, right: 8.0),
+            child: Image.asset('assets/images/Appicon.png'),
+          ),
+        ),
         title: Text(_appBarTitles[_selectedIndex]),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
