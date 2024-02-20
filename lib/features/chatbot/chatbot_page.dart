@@ -50,11 +50,27 @@ class _ChatBotPageState extends State<ChatBotPage> {
           });
         },
         messages: messages,
+        quickReplyOptions: QuickReplyOptions(onTapQuickReply: (QuickReply r) {
+          final ChatMessage m = ChatMessage(
+            user: user,
+            text: r.value ?? r.title,
+            createdAt: DateTime.now(),
+          );
+          setState(() {
+            messages.insert(0, m);
+          });
+        }),
+        messageOptions: const MessageOptions(
+          showCurrentUserAvatar: true,
+          showOtherUsersName: true,
+        ),
         inputOptions: InputOptions(
           sendOnEnter: true,
           inputDecoration: InputDecoration(
             isDense: true,
             filled: true,
+            icon: const Icon(Icons.send),
+            hintText: 'Type a message...',
             contentPadding: const EdgeInsets.only(
               left: 18,
               top: 10,
@@ -63,7 +79,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25),
               borderSide: const BorderSide(
-                width: 0,
+                width: 1,
                 style: BorderStyle.none,
               ),
             ),

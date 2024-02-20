@@ -3,16 +3,16 @@ import 'package:gt_hackathon/custom_route.dart';
 import 'package:gt_hackathon/features/balance/balance_page.dart';
 import 'package:gt_hackathon/features/home_page/home_page.dart';
 import 'package:gt_hackathon/features/profile/user_profile_page.dart';
-import 'package:gt_hackathon/features/chatbot/chatbot_page.dart';
+import 'package:gt_hackathon/features/chatbot/chatbot_page2.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _BottomNavigationBarExampleState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _BottomNavigationBarExampleState extends State<MainPage> {
+class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [

@@ -1,13 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_login/flutter_login.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:gt_hackathon/custom_route.dart';
 import 'package:gt_hackathon/features/home_page/main_page.dart';
 import 'package:gt_hackathon/mock_data/mock_users.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+class UserState extends ChangeNotifier {
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  Duration get loginTime => Duration(milliseconds: timeDilation.ceil() * 2250);
+
+  Future<String?> _loginUser(
+      String email, String password, BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+
+    return Future.delayed(loginTime).then((_) {
+      _isLoading = false;
+      notifyListeners();
+      if (!mockUsers.containsKey(email)) {
+        showCustomSnackbar(context, 'User not exists.');
+        return 'User not exists';
+      }
+      if (mockUsers[email] != password) {
+        _isLoading = false;
+        notifyListeners();
+        showCustomSnackbar(context, 'Password does not match.');
+        return 'Password does not match';
+      }
+      print('Logged in successfully');
+      prefs
+          .setBool("isLogin", true)
+          .then((_) => prefs.setString("username", email));
+      Navigator.of(context).pushReplacement(
+        FadePageRoute(
+          builder: (context) => const MainPage(),
+          settings: const RouteSettings(name: LoginPage.routeName),
+        ),
+      );
+      return null;
+    });
+  }
+}
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/auth';
+
   const LoginPage({super.key});
 
   @override
@@ -15,242 +59,193 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Duration get loginTime => Duration(milliseconds: timeDilation.ceil() * 2250);
-
-  Future<String?> _loginUser(LoginData data) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    return Future.delayed(loginTime).then((_) {
-      if (!mockUsers.containsKey(data.name)) {
-        return 'User not exists';
-      }
-      if (mockUsers[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      prefs
-          .setBool("isLogin", true)
-          .then((_) => prefs.setString("username", data.name));
-      return null;
-    });
-  }
-
-  Future<String?> _recoverPassword(String name) {
-    return Future.delayed(loginTime).then((_) {
-      if (!mockUsers.containsKey(name)) {
-        return 'User not exists';
-      }
-      return null;
-    });
-  }
-
-  Future<String?> _signupUser(SignupData data) {
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
-  }
-
-  Future<String?> _signupConfirm(String error, LoginData data) {
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
-  }
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return FlutterLogin(
-      // title: "GT Hackathon",
-      logo: const AssetImage('assets/images/login_top.png'),
-      validateUserImmediately: true,
-      headerWidget: const Padding(
-        padding: EdgeInsets.only(bottom: 36.0),
-        child: SizedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome',
-                style: TextStyle(
-                  color: Color.fromRGBO(0, 77, 115, 1),
-                  fontSize: 36,
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.info_rounded,
-                      color: Color.fromRGBO(204, 204, 204, 1),
-                      weight: 16.0,
-                    ),
+    return ChangeNotifierProvider(
+      create: (context) => UserState(),
+      child: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Image.asset('assets/images/login_top.png'),
+            ),
+            Container(
+              margin: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(230, 253, 255, 1),
+                borderRadius: BorderRadius.circular(46.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 5.0,
+                    spreadRadius: 5.0,
                   ),
-                  Flexible(
-                    child: Text(
-                      "Please use your existing train ticketing account credentials to log in.",
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 1),
-                      ),
-                    ),
-                  )
                 ],
               ),
-            ],
-          ),
-        ),
-      ),
-      theme: LoginTheme(
-        primaryColor: Colors.white,
-        logoWidth: MediaQuery.of(context).size.width,
-        primaryColorAsInputLabel: false,
-        cardInitialHeight: MediaQuery.of(context).size.height / 2,
-        footerBottomPadding: MediaQuery.of(context).size.height / 6,
-        footerTextStyle: const TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 0.6),
-          fontSize: 16,
-          fontFamily: 'Roboto-Regular',
-        ),
-        cardTheme: CardTheme(
-          clipBehavior: Clip.antiAlias,
-          color: const Color.fromRGBO(230, 253, 255, 1),
-          surfaceTintColor: const Color.fromRGBO(230, 253, 255, 1),
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(46),
-          ),
-        ),
-        bodyStyle: const TextStyle(
-          color: Color.fromRGBO(157, 18, 18, 0.6),
-          fontSize: 16,
-          fontFamily: 'Roboto-Regular',
-        ),
-        buttonStyle: const TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 0.6),
-          fontSize: 16,
-          fontFamily: 'Roboto-Regular',
-        ),
-        textFieldStyle: const TextStyle(
-          color: Color.fromRGBO(218, 19, 19, 0.6),
-          fontSize: 16,
-          fontFamily: 'Roboto-Regular',
-        ),
-        inputTheme: InputDecorationTheme(
-          labelStyle: const TextStyle(
-            color: Color.fromRGBO(0, 0, 0, 0.6),
-            fontSize: 16,
-            fontFamily: 'Roboto-Regular',
-          ),
-          counterStyle: const TextStyle(
-            color: Color.fromRGBO(0, 0, 0, 0.6),
-            fontSize: 16,
-            fontFamily: 'Roboto-Regular',
-          ),
-          filled: true,
-          fillColor: const Color.fromRGBO(255, 255, 255, 1),
-          iconColor: const Color.fromRGBO(0, 0, 0, 0.6),
-          contentPadding: const EdgeInsets.all(16),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(46),
-            borderSide: const BorderSide(
-              color: Color.fromRGBO(0, 77, 115, 1),
-              width: 2,
+              child: Column(
+                children: [
+                  const Text(
+                    'Welcome',
+                    style: TextStyle(
+                      color: Color.fromRGBO(0, 77, 115, 1),
+                      fontSize: 36,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 12.0, bottom: 36.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.info_rounded,
+                            color: Color.fromRGBO(204, 204, 204, 1),
+                            weight: 16.0,
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            "Please use your existing train ticketing account credentials to log in.",
+                            style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 1),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            controller: _emailController,
+                            cursorColor: const Color.fromRGBO(183, 79, 111, 1),
+                            decoration: const InputDecoration(
+                                labelText: 'Username',
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  color: Color.fromRGBO(183, 79, 111, 1),
+                                ))),
+                            validator: (value) {
+                              if (value!.isEmpty || !value.isValidEmail()) {
+                                return 'Please enter a valid email address.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10.0),
+                          TextFormField(
+                            controller: _passwordController,
+                            cursorColor: const Color.fromRGBO(183, 79, 111, 1),
+                            decoration: const InputDecoration(
+                                labelText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  color: Color.fromRGBO(183, 79, 111, 1),
+                                ))),
+                            obscureText: true,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20.0),
+                          Consumer<UserState>(
+                            builder: (context, userState, child) =>
+                                ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(250, 50),
+                                  backgroundColor:
+                                      const Color.fromRGBO(240, 240, 240, 1),
+                                  foregroundColor:
+                                      const Color.fromRGBO(0, 0, 0, 1)),
+                              onPressed: userState.isLoading
+                                  ? null
+                                  : () {
+                                      if (_formKey.currentState!.validate()) {
+                                        userState._loginUser(
+                                            _emailController.text,
+                                            _passwordController.text,
+                                            context);
+                                      }
+                                    },
+                              child: userState.isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text('Login',
+                                      style: TextStyle(fontSize: 18.0)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-        buttonTheme: LoginButtonTheme(
-          backgroundColor: const Color.fromARGB(255, 124, 116, 116),
-          elevation: 5,
-          highlightElevation: 10,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-        ),
-        errorColor: Theme.of(context).colorScheme.error,
-        titleStyle: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'Roboto-Regular',
+            SizedBox(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40),
+                child: RichText(
+                    text: const TextSpan(
+                        text:
+                            "If you don’t have an existing train ticketing account, ",
+                        style: TextStyle(
+                          color: Color.fromRGBO(0, 0, 0, 1),
+                          fontSize: 16,
+                        ),
+                        children: <TextSpan>[
+                      TextSpan(
+                        text: 'register here',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Color.fromRGBO(183, 79, 111, 1),
+                          fontSize: 16,
+                        ),
+                      )
+                    ])),
+              ),
+            )
+          ],
         ),
       ),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      navigateBackAfterRecovery: true,
-
-      footer:
-          "If you don’t have an existing train ticketing account, register here",
-
-      onLogin: (loginData) async {
-        debugPrint('Login info');
-        debugPrint('Name: ${loginData.name}');
-        debugPrint('Password: ${loginData.password}');
-        return _loginUser(loginData);
-      },
-      onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(
-          FadePageRoute(
-            builder: (context) => const MainPage(),
-          ),
-        );
-      },
-      onRecoverPassword: (name) {
-        debugPrint('Recover password info');
-        debugPrint('Name: $name');
-        return _recoverPassword(name);
-      },
-      // onSignup: (signupData) {
-      //   debugPrint('Signup info');
-      //   debugPrint('Name: ${signupData.name}');
-      //   debugPrint('Password: ${signupData.password}');
-
-      //   signupData.additionalSignupData?.forEach((key, value) {
-      //     debugPrint('$key: $value');
-      //   });
-      //   if (signupData.termsOfService.isNotEmpty) {
-      //     debugPrint('Terms of service: ');
-      //     for (final element in signupData.termsOfService) {
-      //       debugPrint(
-      //         ' - ${element.term.id}: ${element.accepted == true ? 'accepted' : 'rejected'}',
-      //       );
-      //     }
-      //   }
-      //   return _signupUser(signupData);
-      // },
-      // onConfirmSignup: _signupConfirm,
-      // onConfirmRecover: _signupConfirm,
-      userValidator: (value) {
-        if (!value!.contains('@') || !value.endsWith('.com')) {
-          return "Email must contain '@' and end with '.com'";
-        }
-        return null;
-      },
-      passwordValidator: (value) {
-        if (value!.isEmpty) {
-          return 'Password is empty';
-        }
-        return null;
-      },
-      additionalSignupFields: [
-        const UserFormField(
-          keyName: 'Username',
-          icon: Icon(Icons.person_2),
-        ),
-        const UserFormField(keyName: 'Name'),
-        const UserFormField(keyName: 'Surname'),
-        UserFormField(
-          keyName: 'phone_number',
-          displayName: 'Phone Number',
-          userType: LoginUserType.phone,
-          fieldValidator: (value) {
-            final phoneRegExp = RegExp(
-              '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}\$',
-            );
-            if (value != null &&
-                value.length < 7 &&
-                !phoneRegExp.hasMatch(value)) {
-              return "This isn't a valid phone number";
-            }
-            return null;
-          },
-        ),
-      ],
     );
   }
+}
+
+extension EmailValidator on String {
+  bool isValidEmail() {
+    // Regular expression for a valid email address
+    final emailRegExp = RegExp(
+      r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+    );
+
+    return emailRegExp.hasMatch(this);
+  }
+}
+
+void showCustomSnackbar(BuildContext context, String message) {
+  final snackBar = SnackBar(
+    content: Text(message,
+        style: const TextStyle(
+          fontSize: 16.0,
+        )),
+    duration: const Duration(seconds: 3),
+    backgroundColor: Colors.red,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
