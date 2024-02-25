@@ -1,143 +1,217 @@
 import 'package:flutter/material.dart';
-import 'package:gt_hackathon/features/home_page/home_page_view_login.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-  });
+import '../../mock_data/mock_tickets.dart';
+
+class TicketBalanceScreen extends StatefulWidget {
+  const TicketBalanceScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<TicketBalanceScreen> createState() => _TicketBalanceScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  HomePageViewLogic? homePageViewLogic;
-
-  // constants for user details
-  String userName = '';
-  int userId = 0;
-  String userEmail = '';
-  String userFirstName = '';
-  String userLastName = '';
-  String userPhoneNumber = '';
-  String userUsername = '';
-  String userProfilePicture = '';
-  double userBalance = 0.0;
-  List userTransactions = [];
-
-  @override
-  void initState() {
-    homePageViewLogic = HomePageViewLogic();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _getUserDetails();
-      });
-    });
-    super.initState();
-  }
-
-  Future<void> _getUserDetails() async {
-    userFirstName = await homePageViewLogic?.getUserFirstName() ?? "";
-    userLastName = await homePageViewLogic?.getUserLastName() ?? "";
-    userPhoneNumber = await homePageViewLogic?.getUserPhoneNumber() ?? "";
-    userUsername = await homePageViewLogic?.getUserUsername() ?? "";
-    userProfilePicture = await homePageViewLogic?.getUserProfilePicture() ?? "";
-    userBalance = await homePageViewLogic?.getUserBalance() ?? 0;
-    userTransactions = await homePageViewLogic?.getUserTransactions() ?? [];
-  }
-
-  List<double> numbers = [0.5, 0.2, 0.3]; // Adjust values as needed
-  List<Color> colors = [
-    Colors.blue,
-    Colors.green,
-    Colors.red
-  ]; // Adjust colors as neede
+class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
+  final List<UserTicket> tickets = mockUserTickets;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(230, 253, 255, 1),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.5),
-            blurRadius: 10,
-          )
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              welcomeHeading(),
-              subHeading(),
-            ],
-          ))
-        ],
-      ),
-    ));
-  }
-
-  Padding subHeading() {
-    return const Padding(
-      padding: EdgeInsets.only(left: 22.0, right: 22.0),
-      child: Text(
-        'Take a look at your points balance',
-        style: TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
-
-  Padding welcomeHeading() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 17.0, left: 22.0),
-      child: Text(
-        'Welcome, $userFirstName!',
-        style: const TextStyle(
-          color: Color.fromRGBO(0, 77, 115, 1),
-          fontSize: 24,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Rewards'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('You have 100 points'),
-                Text('You can redeem 50 points for a free coffee'),
-                Text('You can redeem 100 points for a free train ticket'),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hello, John!',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(0, 82, 122, 1),
+                  ),
+                ),
+                Text(
+                  'Take a look at your points balance',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 20.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(235, 253, 255, 1),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 10.0,
+                        child: LinearProgressIndicator(
+                          value: 0.2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.green),
+                          backgroundColor: Colors.red,
+                          minHeight: 10.0,
+                          semanticsValue: '20%',
+                          semanticsLabel: '20%',
+                        ),
+                      ),
+                      RichText(
+                        text: const TextSpan(
+                          text: '20',
+                          style: TextStyle(
+                              fontSize: 96.0,
+                              color: Color.fromRGBO(0, 77, 115, 1),
+                              fontWeight: FontWeight.bold),
+                          children: [
+                            TextSpan(
+                              text: ' points',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Color.fromRGBO(0, 77, 115, 1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            const SizedBox(height: 20.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Ticket Balance',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: tickets.length,
+                      itemBuilder: (context, index) {
+                        return TicketCard(ticket: tickets[index]);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
+}
+
+class TicketCard extends StatelessWidget {
+  final UserTicket ticket;
+
+  const TicketCard({Key? key, required this.ticket}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2.0,
+            blurRadius: 5.0,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${ticket.type} (+${ticket.points})',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: const Color(0xff333333),
+                    ),
+              ),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Text(
+                    '${ticket.date} (${ticket.dayOfWeek})',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.grey,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Text(
+                    '${ticket.origin} - ${ticket.destination}',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.grey,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Text(
+                    '${ticket.departureTime} - ${ticket.arrivalTime}',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.grey,
+                        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.grey),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class UserTicket {
+  final String type;
+  final int points;
+  final String date;
+  final String dayOfWeek;
+  final String origin;
+  final String destination;
+  final String departureTime;
+  final String arrivalTime;
+
+  const UserTicket({
+    required this.type,
+    required this.points,
+    required this.date,
+    required this.dayOfWeek,
+    required this.origin,
+    required this.destination,
+    required this.departureTime,
+    required this.arrivalTime,
+  });
 }
