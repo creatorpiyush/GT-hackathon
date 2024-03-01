@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../mock_data/mock_tickets.dart';
+import '../../mock_data/mock_user_tickets_rewards.dart';
 
 class TicketBalanceScreen extends StatefulWidget {
   const TicketBalanceScreen({Key? key}) : super(key: key);
@@ -15,12 +15,12 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,8 +82,19 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
                 )
               ],
             ),
-            const SizedBox(height: 20.0),
-            Expanded(
+          ),
+          const SizedBox(height: 20.0),
+          Expanded(
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(230, 253, 255, 1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -109,8 +120,8 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -123,73 +134,90 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20.0),
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2.0,
-            blurRadius: 5.0,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${ticket.type} (+${ticket.points})',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: const Color(0xff333333),
-                    ),
-              ),
-              const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Text(
-                    '${ticket.date} (${ticket.dayOfWeek})',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.grey,
-                        ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Text(
-                    '${ticket.origin} - ${ticket.destination}',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.grey,
-                        ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Text(
-                    '${ticket.departureTime} - ${ticket.arrivalTime}',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.grey,
-                        ),
-                  ),
-                ],
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 20.0),
+          padding: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
               ),
             ],
           ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.grey),
-            onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.only(left: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${ticket.type} (+${ticket.points})',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: const Color(0xff333333),
+                          ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        Text(
+                          '${ticket.date} (${ticket.dayOfWeek})',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        Text(
+                          '${ticket.origin} - ${ticket.destination}',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        Text(
+                          '${ticket.departureTime} - ${ticket.arrivalTime}',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.more_vert, color: Colors.grey),
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+        CircleAvatar(
+          radius: 25.0,
+          backgroundColor: const Color.fromRGBO(0, 234, 255, 1),
+          child: Text(
+            '+${ticket.points}',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: const Color.fromRGBO(0, 77, 115, 1), fontSize: 20.0),
+          ),
+        ),
+      ],
     );
   }
 }

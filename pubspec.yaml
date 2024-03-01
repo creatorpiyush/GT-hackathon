@@ -56,6 +56,7 @@ dependencies:
   google_ml_kit: ^0.16.3
   google_mlkit_commons: ^0.6.1
   google_mlkit_text_recognition: ^0.11.0
+  flutter_svg: ^2.0.10+1
 
 
 dev_dependencies:
@@ -84,6 +85,7 @@ flutter:
   assets:
     - assets/messages.json
     - assets/images/
+    - assets/svg/
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

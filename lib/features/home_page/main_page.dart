@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gt_hackathon/custom_route.dart';
 import 'package:gt_hackathon/features/checkin/checkin_page.dart';
 import 'package:gt_hackathon/features/home_page/home_page.dart';
-import 'package:gt_hackathon/features/profile/user_profile_page.dart';
 import 'package:gt_hackathon/features/chatbot/chatbot_page2.dart';
+import 'package:gt_hackathon/features/ticket/ticket_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -28,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     const TicketBalanceScreen(),
     const ChatScreen(),
-    const UserProfile(),
+    const TicketPage(),
   ];
 
   final List<String> _appBarTitles = [
@@ -47,6 +48,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
         leading: SizedBox(
           width: 50.0,
           height: 50.0,
@@ -60,21 +62,66 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _selectedIndex = 0;
+                });
+              },
+              icon: SvgPicture.asset(
+                'assets/svg/home_icon.svg',
+              ),
+            ),
+            backgroundColor: const Color.fromRGBO(183, 79, 111, 1),
+            activeIcon: IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                'assets/svg/icon-home-pressed.svg',
+              ),
+            ),
             label: 'Home',
-            backgroundColor: Color.fromRGBO(183, 79, 111, 1),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.assistant),
+            icon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _selectedIndex = 1;
+                });
+              },
+              icon: SvgPicture.asset(
+                'assets/svg/icon_assistance.svg',
+              ),
+            ),
+            backgroundColor: const Color.fromRGBO(183, 79, 111, 1),
+            activeIcon: IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                'assets/svg/icon-assistance-pressed-1.svg',
+              ),
+            ),
             label: 'Assistant',
-            backgroundColor: Color.fromRGBO(183, 79, 111, 1),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number),
+            icon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _selectedIndex = 2;
+                });
+              },
+              icon: SvgPicture.asset(
+                'assets/svg/tickets-icon.svg',
+              ),
+            ),
+            backgroundColor: const Color.fromRGBO(183, 79, 111, 1),
+            activeIcon: IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                'assets/svg/icon-tickets-pressed.svg',
+              ),
+            ),
             label: 'Tickets',
-            backgroundColor: Color.fromRGBO(183, 79, 111, 1),
           ),
         ],
         currentIndex: _selectedIndex,

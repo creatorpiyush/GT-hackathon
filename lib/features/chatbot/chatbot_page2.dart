@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -15,12 +16,22 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          _buildMessagesList(),
-          _buildOptions(),
-          _buildInputField(),
-        ],
+      body: Container(
+        // image in the background of the chat and add opacity to the chat
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/chat_background.jpeg'),
+            opacity: 0.5,
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: [
+            _buildMessagesList(),
+            _buildOptions(),
+            _buildInputField(),
+          ],
+        ),
       ),
     );
   }
@@ -63,13 +74,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildInputField() {
     return Container(
+      margin: const EdgeInsets.all(12.0),
       padding: const EdgeInsets.all(8.0),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(255, 255, 255, 0.8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 5.0,
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: _inputController,
               decoration: const InputDecoration(
+                border: InputBorder.none,
                 hintText: 'Type a message...',
               ),
             ),
@@ -79,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               _handleUserInput(_inputController.text);
             },
-            child: const Text('Send'),
+            child: const Icon(Icons.send),
           ),
         ],
       ),
@@ -170,12 +192,18 @@ class ChatMessage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: isUser ? Colors.blueGrey[100] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(8.0),
+                color: isUser
+                    ? const Color.fromRGBO(0, 77, 115, 1)
+                    : const Color.fromRGBO(255, 255, 255, 0.8),
+                borderRadius: BorderRadius.circular(76.5),
               ),
               child: Text(
                 text,
-                style: const TextStyle(fontSize: 16.0),
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: isUser
+                        ? const Color.fromRGBO(255, 255, 255, 1)
+                        : const Color.fromRGBO(0, 77, 115, 1)),
               ),
             ),
           ),
@@ -188,15 +216,23 @@ class ChatMessage extends StatelessWidget {
 
   Widget _buildUserAvatar() {
     return const CircleAvatar(
-      backgroundColor: Colors.blue,
-      child: Icon(Icons.person), // Change color as needed
+      backgroundColor: Color.fromRGBO(0, 77, 115, 1),
+      radius: 25.0,
+      child: Icon(
+        Icons.person,
+        color: Colors.grey,
+      ),
     );
   }
 
   Widget _buildAssistantAvatar() {
-    return const CircleAvatar(
-      backgroundColor: Colors.green,
-      child: Icon(Icons.account_circle), // Change color as needed
+    return CircleAvatar(
+      radius: 25.0,
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+      child: SvgPicture.asset(
+        'assets/svg/icon_assistance.svg',
+        width: 40.0,
+      ),
     );
   }
 
