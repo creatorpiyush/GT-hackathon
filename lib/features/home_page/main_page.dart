@@ -98,7 +98,7 @@ class _MainPageState extends State<MainPage> {
             activeIcon: IconButton(
               onPressed: () {},
               icon: SvgPicture.asset(
-                'assets/svg/icon-assistance-pressed-1.svg',
+                'assets/svg/assistance_pressed.svg',
               ),
             ),
             label: 'Assistant',
@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage> {
             activeIcon: IconButton(
               onPressed: () {},
               icon: SvgPicture.asset(
-                'assets/svg/icon-tickets-pressed.svg',
+                'assets/svg/tickets_pressed.svg',
               ),
             ),
             label: 'Tickets',
