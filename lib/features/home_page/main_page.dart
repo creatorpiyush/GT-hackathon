@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gt_hackathon/custom_route.dart';
@@ -157,6 +155,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> dialogBuilder(BuildContext context) {
+    bool? checkbox_1 = true;
+    bool? checkbox_2 = true;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -199,9 +199,11 @@ class _MainPageState extends State<MainPage> {
                     fillColor: MaterialStateProperty.all(
                       const Color.fromRGBO(183, 79, 111, 1),
                     ),
-                    value: true,
+                    value: checkbox_1,
                     onChanged: (value) {
-                      log(value.toString());
+                      setState(() {
+                        checkbox_1 = value;
+                      });
                     },
                   ),
                 ],
@@ -223,8 +225,12 @@ class _MainPageState extends State<MainPage> {
                     fillColor: MaterialStateProperty.all(
                       const Color.fromRGBO(183, 79, 111, 1),
                     ),
-                    value: true,
-                    onChanged: (value) {},
+                    value: checkbox_2,
+                    onChanged: (value) {
+                      setState(() {
+                        checkbox_2 = value;
+                      });
+                    },
                   ),
                 ],
               ),

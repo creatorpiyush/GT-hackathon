@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gt_hackathon/features/ticket/voucher_view.dart';
+import 'package:gt_hackathon/mock_data/mock_tickets.dart';
 
 class TicketPage extends StatefulWidget {
   const TicketPage({super.key});
@@ -66,37 +69,115 @@ class TicketList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final random = Random();
+
     return Expanded(
       child: ListView.builder(
-        itemCount: 5,
+        itemCount: mockTicketsWithSeat.length,
         itemBuilder: (BuildContext context, int index) {
-          return const Card(
-            margin: EdgeInsets.all(8.0),
+          return Card(
+            surfaceTintColor: const Color.fromRGBO(255, 255, 255, 1),
+            color: const Color.fromRGBO(255, 255, 255, 1),
+            margin: const EdgeInsets.all(8.0),
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Title',
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8.0),
                   Row(
                     children: [
-                      Text('Code'),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 16.0),
+                      Container(
+                        padding: const EdgeInsets.only(
+                            left: 10.0, right: 20.0, top: 5.0, bottom: 5.0),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(255, 190, 152, 1),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Text(
+                          mockTicketsWithSeat[index].seat,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10.0),
+                      Text(
+                        '${mockTicketsWithSeat[index].origin} - ${mockTicketsWithSeat[index].destination}',
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      )
                     ],
                   ),
-                  SizedBox(height: 8.0),
-                  Text('Description'),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Valid until: '),
-                      Text('2022-12-31T00:00:00.000Z'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mockTicketsWithSeat[index].departureTime,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            mockTicketsWithSeat[index].date,
+                          ),
+                        ],
+                      ),
+                      const Icon(Icons.arrow_forward),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mockTicketsWithSeat[index].arrivalTime,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            mockTicketsWithSeat[index].date,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Name",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          // random name 10 numbers
+                          Text(
+                            'T ${random.nextInt(1000000000).toString()}',
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 50.0,
+                        height: 50.0,
+                        child: Image.asset(
+                          'assets/images/qrcode.png',
+                        ),
+                      ),
                     ],
                   ),
                 ],

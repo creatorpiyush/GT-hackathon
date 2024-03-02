@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gt_hackathon/features/chatbot/chatbot_view_logic.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -9,9 +10,29 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  @override
+  void initState() {
+    _messages.add(
+      const ChatMessage(
+        text:
+            'Hello! How can I help you today? \n I’m Pal, your Chat Assistant.',
+        isUser: false,
+      ),
+    );
+    _messages.add(
+      const ChatMessage(
+        text: 'Here is a selection of topics I can help you with:',
+        isUser: false,
+      ),
+    );
+    super.initState();
+  }
+
+  ChatbotViewLogic chatbotViewLogic = ChatbotViewLogic();
+
   final List<ChatMessage> _messages = [];
   final TextEditingController _inputController = TextEditingController();
-  final List<String> _options = ['Option 1', 'Option 2'];
+  List<String> options = ['My train is delayed', 'My train is cancelled'];
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildOptions() {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 8.0, left: 15.0, right: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -60,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          for (String option in _options)
+          for (String option in options)
             ElevatedButton(
               onPressed: () {
                 _handleOptionTap(option);
@@ -117,15 +138,19 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       );
 
-      // Simulate assistant's reply
-      _messages.add(
-        ChatMessage(
-          text: 'Assistant\'s reply to: $option',
-          isUser: false,
-        ),
-      );
+      List<String> assistantReply = chatbotViewLogic.assistantReply(option);
 
-      _updateOptions();
+      // Simulate assistant's reply
+      for (String ar in assistantReply) {
+        _messages.add(
+          ChatMessage(
+            text: ar,
+            isUser: false,
+          ),
+        );
+      }
+
+      _updateOptions(option);
     });
   }
 
@@ -139,29 +164,35 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
 
+        List<String> assistantReply =
+            chatbotViewLogic.assistantReply(userInput);
+
         // Simulate assistant's reply
-        _messages.add(
-          ChatMessage(
-            text: 'Assistant\'s reply to: $userInput',
-            isUser: false,
-          ),
-        );
+        for (String ar in assistantReply) {
+          _messages.add(
+            ChatMessage(
+              text: ar,
+              isUser: false,
+            ),
+          );
+        }
 
         // Clear input field
         _inputController.clear();
 
-        _updateOptions();
+        _updateOptions(userInput);
       });
     }
   }
 
-  void _updateOptions() {
+  void _updateOptions(String option) {
     setState(() {
-      final int currentMax =
-          int.parse(_options.last.split(" ").last); // Extract the last number
-      _options.clear();
-      for (int i = currentMax + 1; i <= currentMax + 2; i++) {
-        _options.add('Option $i');
+      if (option == '9876543e') {
+        options = chatbotViewLogic.updateOptions('voucher-text');
+      } else if (option.toLowerCase() == 'accept voucher') {
+        options = chatbotViewLogic.updateOptions('exit-option');
+      } else {
+        options = chatbotViewLogic.updateOptions(option);
       }
     });
   }

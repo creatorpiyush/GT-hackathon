@@ -1,3 +1,6 @@
+import 'dart:core';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../mock_data/mock_user_tickets_rewards.dart';
@@ -134,6 +137,8 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final random = Random();
+
     return Stack(
       children: [
         Container(
@@ -150,21 +155,29 @@ class TicketCard extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 50.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${ticket.type} (+${ticket.points})',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: const Color(0xff333333),
-                          ),
-                    ),
-                    const SizedBox(height: 10.0),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ticket.travelClass,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: const Color(0xff333333),
+                                  ),
+                            ),
+                            Text('T ${random.nextInt(1000000000).toString()}')
+                          ],
+                        ),
                         Text(
                           '${ticket.date} (${ticket.dayOfWeek})',
                           style:
@@ -174,35 +187,44 @@ class TicketCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10.0),
+                    const SizedBox(height: 20.0),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${ticket.origin} - ${ticket.destination}',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: Colors.grey,
-                                  ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ticket.origin,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              ticket.departureTime,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      children: [
-                        Text(
-                          '${ticket.departureTime} - ${ticket.arrivalTime}',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: Colors.grey,
-                                  ),
+                        const Icon(Icons.arrow_forward),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ticket.destination,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              ticket.arrivalTime,
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
-                ),
-                IconButton(
-                  icon: const Icon(Icons.more_vert, color: Colors.grey),
-                  onPressed: () {},
                 ),
               ],
             ),
@@ -210,9 +232,11 @@ class TicketCard extends StatelessWidget {
         ),
         CircleAvatar(
           radius: 25.0,
-          backgroundColor: const Color.fromRGBO(0, 234, 255, 1),
+          backgroundColor: ticket.points.contains('-')
+              ? const Color.fromRGBO(204, 204, 204, 1)
+              : const Color.fromRGBO(0, 234, 255, 1),
           child: Text(
-            '+${ticket.points}',
+            ticket.points,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: const Color.fromRGBO(0, 77, 115, 1), fontSize: 20.0),
           ),
@@ -224,13 +248,15 @@ class TicketCard extends StatelessWidget {
 
 class UserTicket {
   final String type;
-  final int points;
+  final String points;
   final String date;
   final String dayOfWeek;
   final String origin;
   final String destination;
   final String departureTime;
   final String arrivalTime;
+  final String seat;
+  final String travelClass;
 
   const UserTicket({
     required this.type,
@@ -241,5 +267,7 @@ class UserTicket {
     required this.destination,
     required this.departureTime,
     required this.arrivalTime,
+    this.seat = '',
+    this.travelClass = '',
   });
 }

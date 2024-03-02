@@ -22,6 +22,7 @@ const mockUserAdditionalData = {
     'lastName': 'Anand',
     'phoneNumber': '1234567890',
     'email': 'piyush.anand@gmail.com',
+    "points": "20",
   },
   'daiana.gotiu@gmail.com': {
     'id': 3,

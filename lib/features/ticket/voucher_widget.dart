@@ -34,14 +34,18 @@ class VoucherCard extends StatelessWidget {
       color: voucher.used == true
           ? Colors.grey[300]
           : const Color.fromRGBO(255, 255, 255, 1),
+      surfaceTintColor: voucher.used == true
+          ? Colors.grey[300]
+          : const Color.fromRGBO(255, 255, 255, 1),
       margin: const EdgeInsets.all(8.0),
       child: Stack(
         children: [
-          Container(
-            child: SvgPicture.asset(
-              'assets/svg/blue_bow_icon.svg',
-              fit: BoxFit.fill,
-            ),
+          SvgPicture.asset(
+            voucher.type == VoucherType.discount
+                ? 'assets/svg/light_blue_bow_icon.svg'
+                : 'assets/svg/pink bow icon.svg',
+            fit: BoxFit.fill,
+            height: 200.0,
           ),
           Padding(
             padding: const EdgeInsets.only(
@@ -49,28 +53,47 @@ class VoucherCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  voucher.title,
-                  style: const TextStyle(
-                      fontSize: 16.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8.0),
                 Row(
                   children: [
-                    Text(voucher.code),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          voucher.title,
+                          style: const TextStyle(
+                              fontSize: 26.0, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          voucher.code,
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              color: voucher.type == VoucherType.discount
+                                  ? const Color.fromRGBO(52, 229, 255, 1)
+                                  : Colors.grey),
+                        ),
+                      ],
+                    ),
                     const Spacer(),
-                    if (voucher.type == VoucherType.discount)
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 16.0),
+                    SizedBox(
+                      width: 40.0,
+                      height: 40.0,
+                      child: Image.asset(
+                        'assets/images/qrcode.png',
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 8.0),
-                Text(voucher.description),
+                const SizedBox(height: 20.0),
+                Text(voucher.description,
+                    style: const TextStyle(fontSize: 14.0)),
                 const SizedBox(height: 8.0),
                 if (voucher.validUntil != null)
                   Row(
                     children: [
                       const Text('Valid until: '),
-                      Text(voucher.validUntil!.toIso8601String()),
+                      Text(
+                          '${voucher.validUntil!.year}-${voucher.validUntil!.month}-${voucher.validUntil!.day}'),
                     ],
                   ),
                 if (voucher.used == true)
@@ -78,7 +101,7 @@ class VoucherCard extends StatelessWidget {
                     children: [
                       Text(
                         voucher.usedDate != null
-                            ? 'Used on: ${voucher.usedDate!.toIso8601String()}'
+                            ? 'Used on: ${voucher.usedDate!.year}-${voucher.usedDate!.month}-${voucher.usedDate!.day}}'
                             : 'Used',
                       ),
                     ],
