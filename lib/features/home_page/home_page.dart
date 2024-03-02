@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -137,8 +136,6 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final random = Random();
-
     return Stack(
       children: [
         Container(
@@ -175,7 +172,7 @@ class TicketCard extends StatelessWidget {
                                     color: const Color(0xff333333),
                                   ),
                             ),
-                            Text('T ${random.nextInt(1000000000).toString()}')
+                            Text('T ${ticket.ticketNumber}')
                           ],
                         ),
                         Text(
@@ -257,6 +254,7 @@ class UserTicket {
   final String arrivalTime;
   final String seat;
   final String travelClass;
+  final String ticketNumber;
 
   const UserTicket({
     required this.type,
@@ -269,5 +267,6 @@ class UserTicket {
     required this.arrivalTime,
     this.seat = '',
     this.travelClass = '',
+    required this.ticketNumber,
   });
 }

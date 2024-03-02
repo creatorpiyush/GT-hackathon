@@ -9,12 +9,12 @@ class ChatbotViewLogic {
 
     if (assistantReplyMap.containsKey(userInput)) {
       assistantReplyList.add(assistantReplyMap[userInput]!);
-    } else if (userInput.contains('9876543e')) {
+    } else if (userInput.contains('9876')) {
       assistantReplyList.add(assistantReplyMap['ticket number']!);
       assistantReplyList.add(assistantReplyMap['voucher-text']!);
       assistantReplyList.add(assistantReplyMap['voucher-no-return']!);
-    } else {
-      assistantReplyList.add(userInput);
+    } else if (!assistantReplyMap.containsKey(userInput)) {
+      assistantReplyList.add(assistantReplyMap['nothing-found']!);
     }
 
     return assistantReplyList;
@@ -33,6 +33,7 @@ class ChatbotViewLogic {
   // mapping user input to assistant's reply
   Map<String, String> assistantReplyMap = {
     'hi': 'Hello!',
+    'hello': 'Hello!',
     'how are you?': 'I am fine, thank you!',
     'what is your name?': 'I am Pal! The chat bot',
     'what is your purpose?': 'I am here to assist you with your queries!',
@@ -50,7 +51,12 @@ class ChatbotViewLogic {
         'Great! The voucher has been stored in your Tickets (vouchers) section.',
     'my train is cancelled':
         "I’m sorry to hear this. To help you further, please provide your ticket or reservation code.",
-    'Alternative transportation to destination': ''
+    'alternative transportation to destination': 'Coming soon...',
+    "feedback":
+        "Thank you for chatting with our chatbot, Pal! We hope we were able to assist you effectively. Your feedback is important to us. If you have a moment, please share your rating on your experience. We appreciate your input as we strive to improve and provide better service. Have a great day! \nPal & Team",
+    'nothing-found': 'I am sorry, I could not find any relevant information.',
+    'refund':
+        'The refund request has been processed. You will receive a notification once it is completed. How satisfied are you with the service?',
   };
 
   // mapping user input to relevant options
@@ -61,5 +67,7 @@ class ChatbotViewLogic {
       'Refund',
     ],
     'exit-option': ['Feedback', 'Back to overview'],
+    'feedback': ['Back to overview'],
+    'alternative transportation to destination': ['Back to overview'],
   };
 }

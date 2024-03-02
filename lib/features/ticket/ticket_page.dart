@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:gt_hackathon/features/ticket/voucher_view.dart';
 import 'package:gt_hackathon/mock_data/mock_tickets.dart';
@@ -69,8 +67,6 @@ class TicketList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final random = Random();
-
     return Expanded(
       child: ListView.builder(
         itemCount: mockTicketsWithSeat.length,
@@ -164,7 +160,7 @@ class TicketList extends StatelessWidget {
                           ),
                           // random name 10 numbers
                           Text(
-                            'T ${random.nextInt(1000000000).toString()}',
+                            'T ${mockTicketsWithSeat[index].ticketNumber}',
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),

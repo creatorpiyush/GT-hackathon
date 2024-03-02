@@ -2,6 +2,7 @@ import 'package:gt_hackathon/features/home_page/home_page.dart';
 
 List<UserTicket> mockUserTickets = const [
   UserTicket(
+    ticketNumber: '9876543E',
     type: "Round Trip",
     points: "+20",
     date: "2024-02-22",
@@ -13,6 +14,7 @@ List<UserTicket> mockUserTickets = const [
     travelClass: "Economy",
   ),
   UserTicket(
+    ticketNumber: '9876555D',
     type: "One Way",
     points: "+10",
     date: "2024-02-15",
@@ -24,6 +26,7 @@ List<UserTicket> mockUserTickets = const [
     travelClass: "First Class",
   ),
   UserTicket(
+    ticketNumber: '9876444A',
     type: "Round Trip",
     points: "-10",
     date: "2024-01-28",

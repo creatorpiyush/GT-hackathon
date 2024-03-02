@@ -12,6 +12,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
+    initMessages();
+    super.initState();
+  }
+
+  void initMessages() {
     _messages.add(
       const ChatMessage(
         text:
@@ -25,7 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
         isUser: false,
       ),
     );
-    super.initState();
   }
 
   ChatbotViewLogic chatbotViewLogic = ChatbotViewLogic();
@@ -129,7 +133,9 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _handleOptionTap(String option) {
+  void _handleOptionTap(String option) async {
+    await Future.delayed(const Duration(seconds: 1), () {});
+
     setState(() {
       _messages.add(
         ChatMessage(
@@ -151,10 +157,21 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       _updateOptions(option);
+
+      if (option == 'Back to overview') {
+        _messages.clear();
+        initMessages();
+        setState(() {
+          options = ['My train is delayed', 'My train is cancelled'];
+        });
+        _buildOptions();
+      }
     });
   }
 
-  void _handleUserInput(String userInput) {
+  void _handleUserInput(String userInput) async {
+    await Future.delayed(const Duration(seconds: 1), () {});
+
     if (userInput.isNotEmpty) {
       setState(() {
         _messages.add(
@@ -185,11 +202,12 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void _updateOptions(String option) {
+  void _updateOptions(String option) async {
     setState(() {
-      if (option == '9876543e') {
+      if (option.contains('9876')) {
         options = chatbotViewLogic.updateOptions('voucher-text');
-      } else if (option.toLowerCase() == 'accept voucher') {
+      } else if (option.toLowerCase() == 'accept voucher' ||
+          option.toLowerCase() == 'refund') {
         options = chatbotViewLogic.updateOptions('exit-option');
       } else {
         options = chatbotViewLogic.updateOptions(option);
@@ -221,7 +239,8 @@ class ChatMessage extends StatelessWidget {
           const SizedBox(width: 8.0),
           Flexible(
             child: Container(
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 22.0),
               decoration: BoxDecoration(
                 color: isUser
                     ? const Color.fromRGBO(0, 77, 115, 1)

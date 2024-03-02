@@ -54,25 +54,29 @@ class VoucherCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          voucher.title,
-                          style: const TextStyle(
-                              fontSize: 26.0, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          voucher.code,
-                          style: TextStyle(
-                              fontSize: 18.0,
-                              color: voucher.type == VoucherType.discount
-                                  ? const Color.fromRGBO(52, 229, 255, 1)
-                                  : Colors.grey),
-                        ),
-                      ],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            voucher.title,
+                            style: const TextStyle(
+                                fontSize: 26.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            voucher.code,
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                color: voucher.type == VoucherType.discount
+                                    ? const Color.fromRGBO(52, 229, 255, 1)
+                                    : Colors.grey),
+                          ),
+                        ],
+                      ),
                     ),
                     const Spacer(),
                     SizedBox(

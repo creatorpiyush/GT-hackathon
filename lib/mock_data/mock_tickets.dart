@@ -3,6 +3,7 @@ import 'package:gt_hackathon/features/ticket/voucher_widget.dart';
 
 final List<UserTicket> mockTicketsWithSeat = [
   const UserTicket(
+    ticketNumber: '9876543E',
     type: 'Round Trip',
     points: "+20",
     date: "2024-02-22",
@@ -15,6 +16,7 @@ final List<UserTicket> mockTicketsWithSeat = [
     travelClass: "Economy",
   ),
   const UserTicket(
+    ticketNumber: '9876555D',
     type: 'One Way',
     points: "+10",
     date: "2024-02-22",
@@ -27,6 +29,7 @@ final List<UserTicket> mockTicketsWithSeat = [
     travelClass: "Economy",
   ),
   const UserTicket(
+    ticketNumber: '9876444A',
     type: 'Round Trip',
     points: "-30",
     date: "2024-02-22",
