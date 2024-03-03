@@ -36,6 +36,7 @@ class HomePageViewLogic {
 
   // get user first name from userDetails
   Future<String> getUserFirstName() async {
+    await SharedPreferences.getInstance();
     final userDetails = await getUserDetails();
     if (userDetails == null) {
       return '';
