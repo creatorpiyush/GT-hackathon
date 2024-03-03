@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:gt_hackathon/features/home_page/home_page_view_logic.dart';
 
 import '../../mock_data/mock_user_tickets_rewards.dart';
 
@@ -13,6 +14,39 @@ class TicketBalanceScreen extends StatefulWidget {
 
 class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
   final List<UserTicket> tickets = mockUserTickets;
+  HomePageViewLogic? homePageViewLogic;
+
+  // constants for user details
+  String userName = '';
+  int userId = 0;
+  String userEmail = '';
+  String userFirstName = '';
+  String userLastName = '';
+  String userPhoneNumber = '';
+  String userUsername = '';
+  String userProfilePicture = '';
+  double userBalance = 0.0;
+  List userTransactions = [];
+
+  Future<void> _getUserDetails() async {
+    userFirstName = await homePageViewLogic?.getUserFirstName() ?? "";
+    userLastName = await homePageViewLogic?.getUserLastName() ?? "";
+    userPhoneNumber = await homePageViewLogic?.getUserPhoneNumber() ?? "";
+    userUsername = await homePageViewLogic?.getUserUsername() ?? "";
+    userBalance = await homePageViewLogic?.getUserBalance() ?? 0;
+  }
+
+  @override
+  void initState() {
+    homePageViewLogic = HomePageViewLogic();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _getUserDetails();
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +60,9 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Hello, John!',
-                  style: TextStyle(
+                Text(
+                  'Hello, $userFirstName',
+                  style: const TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
                     color: Color.fromRGBO(0, 82, 122, 1),
@@ -49,12 +83,12 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         height: 10.0,
                         child: LinearProgressIndicator(
-                          value: 0.2,
+                          value: userBalance / 100,
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.green),
+                              const AlwaysStoppedAnimation<Color>(Colors.green),
                           backgroundColor: Colors.red,
                           minHeight: 10.0,
                           semanticsValue: '20%',
@@ -62,13 +96,13 @@ class _TicketBalanceScreenState extends State<TicketBalanceScreen> {
                         ),
                       ),
                       RichText(
-                        text: const TextSpan(
-                          text: '20',
-                          style: TextStyle(
+                        text: TextSpan(
+                          text: userBalance.toInt().toString(),
+                          style: const TextStyle(
                               fontSize: 96.0,
                               color: Color.fromRGBO(0, 77, 115, 1),
                               fontWeight: FontWeight.bold),
-                          children: [
+                          children: const [
                             TextSpan(
                               text: ' points',
                               style: TextStyle(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gt_hackathon/features/chatbot/chatbot_view_logic.dart';
+import 'package:lottie/lottie.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -10,6 +11,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  ChatbotViewLogic chatbotViewLogic = ChatbotViewLogic();
+
+  final List<ChatMessage> _messages = [];
+  final TextEditingController _inputController = TextEditingController();
+  List<String> options = ['My train is delayed', 'My train is cancelled'];
+  bool _loading = false;
+
   @override
   void initState() {
     initMessages();
@@ -32,12 +40,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  ChatbotViewLogic chatbotViewLogic = ChatbotViewLogic();
-
-  final List<ChatMessage> _messages = [];
-  final TextEditingController _inputController = TextEditingController();
-  List<String> options = ['My train is delayed', 'My train is cancelled'];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +55,16 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             _buildMessagesList(),
+            _loading
+                ? Lottie.asset(
+                    'assets/lottie/ai.json',
+                    width: MediaQuery.of(context).size.width - 50.0,
+                    animate: true,
+                    repeat: true,
+                    alignment: Alignment.center,
+                    backgroundLoading: true,
+                  )
+                : const SizedBox(),
             _buildOptions(),
             _buildInputField(),
           ],
@@ -134,9 +146,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _handleOptionTap(String option) async {
+    setState(() {
+      _loading = true;
+    });
+
     await Future.delayed(const Duration(seconds: 1), () {});
 
-    setState(() {
+    setState(() async {
       _messages.add(
         ChatMessage(
           text: 'You selected: $option',
@@ -144,7 +160,8 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       );
 
-      List<String> assistantReply = chatbotViewLogic.assistantReply(option);
+      List<String> assistantReply =
+          await chatbotViewLogic.assistantReply(option);
 
       // Simulate assistant's reply
       for (String ar in assistantReply) {
@@ -155,6 +172,8 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         );
       }
+
+      _loading = false;
 
       _updateOptions(option);
 
@@ -170,10 +189,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _handleUserInput(String userInput) async {
+    setState(() {
+      _loading = true;
+    });
     await Future.delayed(const Duration(seconds: 1), () {});
 
     if (userInput.isNotEmpty) {
-      setState(() {
+      setState(() async {
         _messages.add(
           ChatMessage(
             text: userInput,
@@ -182,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
         );
 
         List<String> assistantReply =
-            chatbotViewLogic.assistantReply(userInput);
+            await chatbotViewLogic.assistantReply(userInput);
 
         // Simulate assistant's reply
         for (String ar in assistantReply) {
@@ -193,6 +215,8 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           );
         }
+
+        _loading = false;
 
         // Clear input field
         _inputController.clear();

@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/splash_screen/splash_screen.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferences.getInstance();
+
+  Gemini.init(
+    apiKey: dotenv.env['GEMINI_API_KEY'] ?? '',
+    enableDebugging: true,
+  );
+
   runApp(const MyApp());
 }
 

@@ -85,7 +85,7 @@ class HomePageViewLogic {
     if (userDetails == null) {
       return 0.0;
     }
-    return userDetails['balance'] as double;
+    return userDetails['points'] as double;
   }
 
   // get user transactions from userDetails

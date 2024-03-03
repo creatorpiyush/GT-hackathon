@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gt_hackathon/custom_route.dart';
+import 'package:gt_hackathon/features/login/login_page.dart';
 import 'package:gt_hackathon/features/ticket/voucher_view.dart';
 import 'package:gt_hackathon/mock_data/mock_tickets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TicketPage extends StatefulWidget {
   const TicketPage({super.key});
@@ -32,29 +35,54 @@ class _TicketPageState extends State<TicketPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 10.0),
-            Wrap(
-              spacing: 10.0,
-              children: List<Widget>.generate(
-                2,
-                (int index) {
-                  return ChoiceChip(
-                    label: Text(choices[index]),
-                    selected: _value == index,
-                    backgroundColor: const Color.fromRGBO(230, 253, 255, 1),
-                    selectedColor: const Color.fromRGBO(255, 208, 223, 1),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        _value = selected ? index : null;
-                      });
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Wrap(
+                  spacing: 10.0,
+                  children: List<Widget>.generate(
+                    2,
+                    (int index) {
+                      return ChoiceChip(
+                        label: Text(choices[index]),
+                        selected: _value == index,
+                        backgroundColor: const Color.fromRGBO(230, 253, 255, 1),
+                        selectedColor: const Color.fromRGBO(255, 208, 223, 1),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _value = selected ? index : null;
+                          });
+                        },
+                      );
                     },
-                  );
-                },
-              ).toList(),
+                  ).toList(),
+                ),
+                IconButton(
+                  tooltip: "Logout",
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    logout(context);
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: 10.0),
             _value == 0 ? const TicketList() : VoucherView(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+void logout(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.clear();
+  prefs.setBool("isLogin", false);
+  if (context.mounted) {
+    Navigator.of(context).pushReplacement(
+      FadePageRoute(
+        builder: (context) => const LoginPage(),
       ),
     );
   }

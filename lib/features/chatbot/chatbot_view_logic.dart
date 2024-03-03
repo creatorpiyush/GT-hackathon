@@ -1,11 +1,18 @@
+import 'package:flutter_gemini/flutter_gemini.dart';
+
 class ChatbotViewLogic {
-  final String userInput = '';
+  String userInput = '';
+  final gemini = Gemini.instance;
+  List<String> previousUserInput = [];
 
   // assistant's reply to user input with mapped options
-  List<String> assistantReply(String userInput) {
+  Future<List<String>> assistantReply(String userInput) async {
     userInput = userInput.toLowerCase();
+    previousUserInput.add(userInput);
 
     List<String> assistantReplyList = [];
+
+    String? value = getValueBySubstring(assistantReplyMap, userInput);
 
     if (assistantReplyMap.containsKey(userInput)) {
       assistantReplyList.add(assistantReplyMap[userInput]!);
@@ -14,26 +21,92 @@ class ChatbotViewLogic {
       assistantReplyList.add(assistantReplyMap['voucher-text']!);
       assistantReplyList.add(assistantReplyMap['voucher-no-return']!);
     } else if (!assistantReplyMap.containsKey(userInput)) {
-      assistantReplyList.add(assistantReplyMap['nothing-found']!);
+      if (value != null) {
+        assistantReplyList.add(value);
+      } else {
+        // input string to array
+        List<String> inputArray = userInput.split(' ');
+        String newValue = '';
+        for (String input in inputArray) {
+          value = getValueBySubstring(assistantReplyMap, input);
+          if (value != null) {
+            newValue = value;
+            previousUserInput.add(input);
+          }
+        }
+        if (newValue.isNotEmpty) {
+          assistantReplyList.add(newValue);
+        } else {
+          assistantReplyList.add(
+              '${await geminiAssistantReply(userInput)} \nResponse from Bot.');
+        }
+      }
+    } else if (!assistantReplyMap.containsKey(userInput) &&
+        userInput != 'back to overview') {
+      // assistantReplyList.add(assistantReplyMap['nothing-found']!);
+      assistantReplyList.add(await geminiAssistantReply(userInput));
     }
-
     return assistantReplyList;
   }
 
   // find relevant options for user input
   List<String> updateOptions(String userInput) {
     userInput = userInput.toLowerCase();
-    if (userOptionsMap.containsKey(userInput)) {
+    print(previousUserInput);
+
+    if (containsSubstring(previousUserInput, '9876') &&
+        (containsSubstring(previousUserInput, 'delay') ||
+            previousUserInput.contains('my train is delayed'))) {
+      previousUserInput.clear();
+      return userOptionsMap['delay-voucher-text']!;
+    } else if (containsSubstring(previousUserInput, '9876') &&
+        (containsSubstring(previousUserInput, 'cancel') ||
+            previousUserInput.contains('my train is cancelled'))) {
+      previousUserInput.clear();
+      return userOptionsMap['cancel-voucher-text']!;
+    } else if (userOptionsMap.containsKey(userInput)) {
       return userOptionsMap[userInput]!;
     } else {
       return [];
     }
   }
 
+  String? getValueBySubstring(Map<String, String> map, String sub) {
+    for (var key in map.keys) {
+      if (key.contains(sub)) {
+        return map[key];
+      }
+    }
+    return null;
+  }
+
+  bool containsSubstring(List<String> arr, String sub) {
+    return arr.any((element) => element.contains(sub));
+  }
+
+  // Gemini chat bot assistant's reply
+  Future<String> geminiAssistantReply(String userInput) async {
+    String? result;
+
+    await gemini
+        .text(userInput,
+            generationConfig: GenerationConfig(
+              temperature: 0.5,
+              topP: 1.0,
+              topK: 40,
+            ))
+        .then((value) {
+      result = value?.content?.parts?.last.text;
+    }).catchError((e) {
+      print(e);
+    });
+    return result ?? assistantReplyMap['nothing-found'] ?? '';
+  }
+
   // mapping user input to assistant's reply
   Map<String, String> assistantReplyMap = {
-    'hi': 'Hello!',
-    'hello': 'Hello!',
+    'hi': 'Hello! How can I assist you today?',
+    'hello': 'Hello there! How can I assist you today?',
     'how are you?': 'I am fine, thank you!',
     'what is your name?': 'I am Pal! The chat bot',
     'what is your purpose?': 'I am here to assist you with your queries!',
@@ -61,7 +134,11 @@ class ChatbotViewLogic {
 
   // mapping user input to relevant options
   Map<String, List<String>> userOptionsMap = {
-    'voucher-text': [
+    'delay-voucher-text': [
+      'Accept voucher',
+      'Refund',
+    ],
+    'cancel-voucher-text': [
       'Accept voucher',
       'Alternative transportation to destination',
       'Refund',

@@ -57,6 +57,10 @@ dependencies:
   google_mlkit_commons: ^0.6.1
   google_mlkit_text_recognition: ^0.11.0
   flutter_svg: ^2.0.10+1
+  flutter_dotenv: ^5.1.0
+  flutter_gemini: ^2.0.3
+  flutter_markdown: ^0.6.20
+  lottie: ^3.1.0
 
 
 dev_dependencies:
@@ -86,6 +90,8 @@ flutter:
     - assets/messages.json
     - assets/images/
     - assets/svg/
+    - .env
+    - assets/lottie/
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

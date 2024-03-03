@@ -14,6 +14,7 @@ const mockUserAdditionalData = {
     'lastName': 'Garg',
     'phoneNumber': '1234567890',
     'email': 'rohit.garg@gmail.com',
+    "points": 10.0,
   },
   'piyush.anand@gmail.com': {
     'id': 2,
@@ -22,7 +23,7 @@ const mockUserAdditionalData = {
     'lastName': 'Anand',
     'phoneNumber': '1234567890',
     'email': 'piyush.anand@gmail.com',
-    "points": "20",
+    "points": 20.0,
   },
   'daiana.gotiu@gmail.com': {
     'id': 3,
@@ -30,7 +31,8 @@ const mockUserAdditionalData = {
     'firstName': 'Daiana',
     'lastName': 'Gotiu',
     'phoneNumber': '1234567890',
-    'email': 'daiana.gotiu@gmail.com'
+    'email': 'daiana.gotiu@gmail.com',
+    "points": 30.0
   },
   'marius.bogdan@gmail.com': {
     'id': 4,
@@ -38,7 +40,8 @@ const mockUserAdditionalData = {
     'firstName': 'Marius',
     'lastName': 'Bogdan',
     'phoneNumber': '1234567890',
-    'email': 'marius.bogdan@gmail.com'
+    'email': 'marius.bogdan@gmail.com',
+    "points": 40.0
   },
   'prateek.dhawan@gmail.com': {
     'id': 5,
@@ -46,6 +49,7 @@ const mockUserAdditionalData = {
     'firstName': 'Prateek',
     'lastName': 'Dhawan',
     'phoneNumber': '1234567890',
-    'email': 'prateek.dhawan@gmail.com'
+    'email': 'prateek.dhawan@gmail.com',
+    "points": 50.0
   },
 };
