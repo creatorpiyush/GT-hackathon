@@ -14,12 +14,16 @@ class ChatbotViewLogic {
 
     String? value = getValueBySubstring(assistantReplyMap, userInput);
 
-    if (assistantReplyMap.containsKey(userInput)) {
-      assistantReplyList.add(assistantReplyMap[userInput]!);
-    } else if (userInput.contains('9876')) {
+    if (userInput.contains('9876')) {
       assistantReplyList.add(assistantReplyMap['ticket number']!);
       assistantReplyList.add(assistantReplyMap['voucher-text']!);
       assistantReplyList.add(assistantReplyMap['voucher-no-return']!);
+    } else if (containsSubstring(previousUserInput, 'refund')) {
+      previousUserInput.remove('refund');
+      assistantReplyList.add(assistantReplyMap['refund']!);
+      assistantReplyList.add(assistantReplyMap['points-text']!);
+    } else if (assistantReplyMap.containsKey(userInput)) {
+      assistantReplyList.add(assistantReplyMap[userInput]!);
     } else if (!assistantReplyMap.containsKey(userInput)) {
       if (value != null) {
         assistantReplyList.add(value);
@@ -29,7 +33,18 @@ class ChatbotViewLogic {
         String newValue = '';
         for (String input in inputArray) {
           value = getValueBySubstring(assistantReplyMap, input);
-          if (value != null) {
+          if (value != null &&
+              input != 'my' &&
+              input != 'is' &&
+              input != 'to' &&
+              input != 'the' &&
+              input != 'a' &&
+              input != 'an' &&
+              input != 'and' &&
+              input != 'or' &&
+              input != 'for' &&
+              input != 'with' &&
+              input != 'without') {
             newValue = value;
             previousUserInput.add(input);
           }
@@ -130,6 +145,8 @@ class ChatbotViewLogic {
     'nothing-found': 'I am sorry, I could not find any relevant information.',
     'refund':
         'The refund request has been processed. You will receive a notification once it is completed. How satisfied are you with the service?',
+    "points-text":
+        "As a token of gratitude, enjoy an extra 50 points besides your voucher. Thank you for being our valued customer! \nPal & Team",
   };
 
   // mapping user input to relevant options
